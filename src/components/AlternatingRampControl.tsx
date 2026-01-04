@@ -16,6 +16,50 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
     const [multiplier, setMultiplier] = useState(1);
     const [measuresPerStep, setMeasuresPerStep] = useState(4);
 
+    // Abstracted styles
+    const containerStyle: React.CSSProperties = {
+        display: 'flex',
+        gap: styles.spacing.gap.sm,
+        margin: `${styles.spacing.margin.sm} 0`,
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+    };
+
+    const operatorSignStyle: React.CSSProperties = {
+        fontSize: '0.9em',
+        marginBottom: styles.spacing.margin.xs,
+        color: styles.colors.text,
+        display: 'flex',
+        alignItems: 'center',
+    };
+
+    const errorMessageStyle: React.CSSProperties = {
+        fontSize: '0.65em',
+        color: '#ff6b6b',
+        margin: `${styles.spacing.margin.xs} 0`,
+        textAlign: 'center',
+    };
+
+    const validationMessageStyle: React.CSSProperties = {
+        fontSize: '0.65em',
+        color: styles.colors.textLight,
+        margin: `${styles.spacing.margin.xs} 0`,
+        textAlign: 'center',
+    };
+
+    const sequenceItemStyle = (isActive: boolean): React.CSSProperties => ({
+        backgroundColor: isActive ? styles.colors.accent : "transparent",
+        color: isActive ? 'white' : 'inherit',
+        padding: "2px",
+        borderRadius: "2px",
+        fontWeight: isActive ? 'bold' : 'normal',
+        transition: 'all 0.2s',
+    });
+
+    const subscriptStyle: React.CSSProperties = {
+        fontSize: '0.6em',
+    };
+
     const handleStart = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
@@ -50,17 +94,10 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
             steps.push(
                 <span
                     key={`pos-${i}`}
-                    style={{
-                        backgroundColor: active ? styles.colors.accent : 'transparent',
-                        color: active ? 'white' : 'inherit',
-                        padding: active ? '2px 4px' : '0',
-                        borderRadius: active ? '3px' : '0',
-                        fontWeight: active ? 'bold' : 'normal',
-                        transition: 'all 0.2s',
-                    }}
+                    style={sequenceItemStyle(active)}
                 >
                     +{positiveStep}
-                    <sub style={{ fontSize: '0.6em' }}>({cumulativeChange})</sub>
+                    <sub style={subscriptStyle}>({cumulativeChange})</sub>
                 </span>
             );
         }
@@ -73,17 +110,10 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
         steps.push(
             <span
                 key="neg"
-                style={{
-                    backgroundColor: active ? styles.colors.accent : 'transparent',
-                    color: active ? 'white' : 'inherit',
-                    padding: active ? '2px 4px' : '0',
-                    borderRadius: active ? '3px' : '0',
-                    fontWeight: active ? 'bold' : 'normal',
-                    transition: 'all 0.2s',
-                }}
+                style={sequenceItemStyle(active)}
             >
                 -{negativeStep}
-                <sub style={{ fontSize: '0.6em' }}>({cumulativeChange})</sub>
+                <sub style={subscriptStyle}>({cumulativeChange})</sub>
             </span>
         );
 
@@ -92,7 +122,7 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
 
     return (
         <>
-            <div style={{ display: 'flex', gap: styles.spacing.gap.sm, margin: `${styles.spacing.margin.sm} 0`, justifyContent: 'center', alignItems: 'flex-end' }}>
+            <div style={containerStyle}>
                 <NumberInputField
                     label="Mult"
                     value={multiplier}
@@ -103,13 +133,7 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
                     onChange={(value) => setMultiplier(Math.round(value))}
                     borderColor={hasValidationError ? '#ff6b6b' : undefined}
                 />
-                <div style={{
-                    fontSize: '0.9em',
-                    marginBottom: styles.spacing.margin.xs,
-                    color: styles.colors.text,
-                    display: 'flex',
-                    alignItems: 'center',
-                }}>
+                <div style={operatorSignStyle}>
                     ×
                 </div>
                 <NumberInputField
@@ -122,6 +146,9 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
                     onChange={(value) => setPositiveStep(Math.round(value))}
                     borderColor={hasValidationError ? '#ff6b6b' : undefined}
                 />
+                <div style={operatorSignStyle}>
+                    −
+                </div>
                 <NumberInputField
                     label="-Step"
                     value={negativeStep}
@@ -146,23 +173,13 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
             </div>
 
             {!isValid && (
-                <div style={{
-                    fontSize: '0.65em',
-                    color: '#ff6b6b',
-                    margin: `${styles.spacing.margin.xs} 0`,
-                    textAlign: 'center',
-                }}>
+                <div style={errorMessageStyle}>
                     {hasValidationError ? `(Mult × +Step) must be greater than -Step` : 'Measures must be at least 1'}
                 </div>
             )}
 
             {isValid && (
-                <div style={{
-                    fontSize: '0.65em',
-                    color: styles.colors.textLight,
-                    margin: `${styles.spacing.margin.xs} 0`,
-                    textAlign: 'center',
-                }}>
+                <div style={validationMessageStyle}>
                     <div style={{ marginBottom: styles.spacing.margin.xs }}>
                         <strong>Sequence:</strong> {generateSequence()}
                     </div>
@@ -171,8 +188,6 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
                     </div>
                 </div>
             )}
-
-
         </>
     );
 }
