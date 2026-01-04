@@ -77,7 +77,7 @@ export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
   `;
 
     return (
-        <div style={{ margin: `${styles.spacing.margin.lg} 0` }}>
+        <div style={{ margin: `${styles.spacing.margin.lg} 0` }} onWheel={handleWheel}>
             <div style={{ ...styles.components.label, marginBottom: styles.spacing.margin.sm, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 Beats Per Minute (BPM)
                 <HelpIcon
@@ -91,7 +91,7 @@ export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
                             <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
                                 <li>Use the slider to adjust</li>
                                 <li>Click +/- buttons for quick adjustments</li>
-                                <li>Scroll mouse wheel over the BPM display</li>
+                                <li>Scroll mouse wheel anywhere in the BPM control area</li>
                             </ul>
                         </div>
                     }
@@ -102,7 +102,6 @@ export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
                     ...styles.components.valueDisplayLarge,
                     margin: `${styles.spacing.margin.md} 0`,
                 }}
-                onWheel={handleWheel}
             >
                 {Math.round(bpm)}
             </div>
@@ -121,7 +120,6 @@ export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
                     max={CONSTANTS.BPM.MAX}
                     value={bpm}
                     onChange={handleSliderChange}
-                    onWheel={handleWheel}
                     style={{ ...sliderStyle, flex: 1 }}
                 />
                 <BPMButtonGroup>

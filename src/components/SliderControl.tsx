@@ -23,8 +23,8 @@ export function SliderControl({ label, icon, value, min, max, scale, onChange }:
     const handleWheel = useCallback((e: React.WheelEvent) => {
         e.preventDefault();
         const delta = e.deltaY > 0 ? -1 : 1;
-        const currentValue = value * scale;
-        const newValue = clamp((currentValue + delta) / scale, min, max);
+        const step = scale === 100 ? 0.01 : 1; // Smaller steps for percentage values
+        const newValue = clamp(value + delta * step, min, max);
         onChange(newValue);
     }, [value, min, max, scale, onChange]);
 
@@ -52,10 +52,13 @@ export function SliderControl({ label, icon, value, min, max, scale, onChange }:
                 {icon && <i className={icon} style={{ marginRight: styles.spacing.margin.md }}></i>}
                 {label}
             </div>
-            <div style={{
-                ...styles.components.valueDisplay,
-                margin: `${styles.spacing.margin.sm} 0`,
-            }}>
+            <div
+                style={{
+                    ...styles.components.valueDisplay,
+                    margin: `${styles.spacing.margin.sm} 0`,
+                }}
+                onWheel={handleWheel}
+            >
                 {displayValue}
             </div>
             <style>{`
