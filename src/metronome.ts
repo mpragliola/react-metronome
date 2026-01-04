@@ -181,8 +181,7 @@ export class Metronome extends EventTarget {
 
         // Store ramp parameters for step tracking
         this.alternatingRampMultiplier = multiplier;
-        this.currentRampStepIndex = 0;
-        this.dispatchEvent(new CustomEvent(CONSTANTS.EVENTS.RAMP_STEP_CHANGED, { detail: { stepIndex: 0 } }));
+        this.currentRampStepIndex = null; // Will be set when first step executes
 
         let stepCount = 0;
         let currentBpmValue = clampedStartBpm;
@@ -198,7 +197,7 @@ export class Metronome extends EventTarget {
             const stepValue = isPositiveStep ? positiveStep : -negativeStep;
             currentBpmValue += stepValue;
 
-            // Update and emit step index
+            // Update and emit step index (only when step actually executes)
             this.currentRampStepIndex = cyclePosition;
             this.dispatchEvent(new CustomEvent(CONSTANTS.EVENTS.RAMP_STEP_CHANGED, { detail: { stepIndex: cyclePosition } }));
 
