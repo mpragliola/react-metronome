@@ -33,17 +33,31 @@ export class Metronome extends EventTarget {
     ) {
         super();
         this.audioGenerator = new AudioGenerator();
-        this.bpm = clamp(initialBpm, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
+        this.bpm = this.clampBpm(initialBpm);
         this.volume = clamp(initialVolume, CONSTANTS.VOLUME.MIN, CONSTANTS.VOLUME.MAX);
         this.accentPattern = clamp(initialAccent, CONSTANTS.ACCENT.MIN, CONSTANTS.ACCENT.MAX);
         this.updateBeatInterval();
     }
 
     /**
+     * Clamp BPM to valid range
+     */
+    private clampBpm(bpm: number): number {
+        return clamp(bpm, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
+    }
+
+    /**
+     * Clamp interval to reasonable bounds (100ms to 10s)
+     */
+    private clampInterval(intervalMs: number): number {
+        return Math.max(100, Math.min(intervalMs, 10000));
+    }
+
+    /**
      * Set BPM with validation and emit event
      */
     setBpm(bpm: number): void {
-        const clampedBpm = clamp(bpm, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
+        const clampedBpm = this.clampBpm(bpm);
         if (this.bpm !== clampedBpm) {
             this.bpm = clampedBpm;
             this.updateBeatInterval();
@@ -66,13 +80,11 @@ export class Metronome extends EventTarget {
      */
     startRamp(startBpm: number, targetBpm: number, incrementPerStep: number, durationSeconds: number): boolean {
         // Set start BPM if different from current
-        const clampedStartBpm = clamp(startBpm, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
-        if (Math.abs(this.bpm - clampedStartBpm) > 0.1) {
-            this.setBpm(clampedStartBpm);
-        }
+        const clampedStartBpm = this.clampBpm(startBpm);
+        this.setBpmIfDifferent(clampedStartBpm);
 
         // Calculate ramp parameters
-        const clampedTargetBpm = clamp(targetBpm, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
+        const clampedTargetBpm = this.clampBpm(targetBpm);
         const bpmDifference = Math.abs(clampedTargetBpm - clampedStartBpm);
 
         if (bpmDifference < 0.1) {
@@ -81,7 +93,7 @@ export class Metronome extends EventTarget {
 
         const steps = Math.ceil(bpmDifference / incrementPerStep);
         const stepIntervalMs = steps > 0 ? (durationSeconds * 1000) / steps : 1000;
-        const clampedInterval = Math.max(100, Math.min(stepIntervalMs, 10000)); // Between 100ms and 10s
+        const clampedInterval = this.clampInterval(stepIntervalMs);
 
         // Start the ramp
         this.rampToBpm(clampedTargetBpm, incrementPerStep, clampedInterval);
@@ -99,7 +111,7 @@ export class Metronome extends EventTarget {
         const wasRamping = this.isRamping();
         this.cancelRamp();
 
-        const clampedTarget = clamp(targetBpm, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
+        const clampedTarget = this.clampBpm(targetBpm);
         const startBpm = this.bpm;
         const bpmDifference = clampedTarget - startBpm;
 
@@ -109,9 +121,7 @@ export class Metronome extends EventTarget {
         }
 
         // Emit ramp start event if not already ramping
-        if (!wasRamping) {
-            this.dispatchEvent(new CustomEvent(CONSTANTS.EVENTS.RAMP_START));
-        }
+        this.dispatchRampStartIfNeeded(wasRamping);
 
         const direction = bpmDifference > 0 ? 1 : -1;
         const clampedIncrement = Math.abs(incrementPerStep);
@@ -162,12 +172,10 @@ export class Metronome extends EventTarget {
         this.cancelRamp();
 
         // Set start BPM if different from current
-        const clampedStartBpm = clamp(startBpm, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
-        if (Math.abs(this.bpm - clampedStartBpm) > 0.1) {
-            this.setBpm(clampedStartBpm);
-        }
+        const clampedStartBpm = this.clampBpm(startBpm);
+        this.setBpmIfDifferent(clampedStartBpm);
 
-        const clampedTargetBpm = clamp(targetBpm, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
+        const clampedTargetBpm = this.clampBpm(targetBpm);
         const bpmDifference = clampedTargetBpm - clampedStartBpm;
 
         if (bpmDifference <= 0) {
@@ -175,9 +183,7 @@ export class Metronome extends EventTarget {
         }
 
         // Emit ramp start event if not already ramping
-        if (!wasRamping) {
-            this.dispatchEvent(new CustomEvent(CONSTANTS.EVENTS.RAMP_START));
-        }
+        this.dispatchRampStartIfNeeded(wasRamping);
 
         // Store ramp parameters for step tracking
         this.alternatingRampMultiplier = multiplier;
@@ -202,7 +208,7 @@ export class Metronome extends EventTarget {
             this.dispatchEvent(new CustomEvent(CONSTANTS.EVENTS.RAMP_STEP_CHANGED, { detail: { stepIndex: cyclePosition } }));
 
             // Clamp to valid BPM range
-            currentBpmValue = clamp(currentBpmValue, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
+            currentBpmValue = this.clampBpm(currentBpmValue);
             this.setBpm(currentBpmValue);
 
             // Check if we've reached or exceeded the target
@@ -220,8 +226,7 @@ export class Metronome extends EventTarget {
                 const beatsPerMeasure = this.accentPattern;
                 const beatsPerStep = measuresPerStep * beatsPerMeasure;
                 const stepIntervalMs = beatIntervalMs * beatsPerStep;
-                // Clamp interval to reasonable bounds (100ms to 10s)
-                const clampedInterval = Math.max(100, Math.min(stepIntervalMs, 10000));
+                const clampedInterval = this.clampInterval(stepIntervalMs);
                 this.rampIntervalId = window.setTimeout(scheduleNextStep, clampedInterval);
             }
         };
@@ -232,7 +237,7 @@ export class Metronome extends EventTarget {
         const beatsPerMeasure = this.accentPattern;
         const initialBeatsPerStep = measuresPerStep * beatsPerMeasure;
         const initialStepIntervalMs = initialBeatIntervalMs * initialBeatsPerStep;
-        const clampedInitialInterval = Math.max(100, Math.min(initialStepIntervalMs, 10000));
+        const clampedInitialInterval = this.clampInterval(initialStepIntervalMs);
         this.rampIntervalId = window.setTimeout(scheduleNextStep, clampedInitialInterval);
 
         return true;
@@ -354,17 +359,12 @@ export class Metronome extends EventTarget {
             try {
                 const averageInterval = calculateAverageInterval(this.tapTimes);
                 const tappedBpm = msToBpm(averageInterval);
-                const newBpm = clamp(tappedBpm, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
+                const newBpm = this.clampBpm(tappedBpm);
 
                 this.setBpm(newBpm);
                 return newBpm;
             } catch (error) {
-                this.dispatchEvent(new CustomEvent(CONSTANTS.EVENTS.ERROR, {
-                    detail: {
-                        error: error instanceof Error ? error : new Error(String(error)),
-                        context: 'tapTempo',
-                    }
-                }));
+                this.dispatchErrorEvent(error, 'tapTempo');
                 return null;
             }
         }
@@ -409,12 +409,7 @@ export class Metronome extends EventTarget {
             this.scheduleNextBeat();
         } catch (error) {
             this.isRunning = false;
-            this.dispatchEvent(new CustomEvent(CONSTANTS.EVENTS.ERROR, {
-                detail: {
-                    error: error instanceof Error ? error : new Error(String(error)),
-                    context: 'start',
-                }
-            }));
+            this.dispatchErrorEvent(error, 'start');
         }
     }
 
@@ -444,6 +439,36 @@ export class Metronome extends EventTarget {
      */
     private updateBeatInterval(): void {
         this.beatInterval = calculateBeatInterval(this.bpm, this.feel);
+    }
+
+    /**
+     * Set BPM if it's different from current (with tolerance for floating point)
+     */
+    private setBpmIfDifferent(bpm: number): void {
+        if (Math.abs(this.bpm - bpm) > 0.1) {
+            this.setBpm(bpm);
+        }
+    }
+
+    /**
+     * Dispatch ramp start event if not already ramping
+     */
+    private dispatchRampStartIfNeeded(wasRamping: boolean): void {
+        if (!wasRamping) {
+            this.dispatchEvent(new CustomEvent(CONSTANTS.EVENTS.RAMP_START));
+        }
+    }
+
+    /**
+     * Dispatch error event with consistent formatting
+     */
+    private dispatchErrorEvent(error: unknown, context: string): void {
+        this.dispatchEvent(new CustomEvent(CONSTANTS.EVENTS.ERROR, {
+            detail: {
+                error: error instanceof Error ? error : new Error(String(error)),
+                context,
+            }
+        }));
     }
 
     /**
@@ -503,34 +528,36 @@ export class Metronome extends EventTarget {
 
         switch (this.subdivisionMode) {
             case 'straight':
-                this.subdivisionTimeoutIds.push(
-                    window.setTimeout(callback, this.beatInterval / 2)
-                );
+                this.scheduleSubdivisionAtIntervals(callback, 2, [1]);
                 break;
 
             case 'triplet':
-                this.subdivisionTimeoutIds.push(
-                    window.setTimeout(callback, this.beatInterval / 3),
-                    window.setTimeout(callback, (this.beatInterval * 2) / 3)
-                );
+                this.scheduleSubdivisionAtIntervals(callback, 3, [1, 2]);
                 break;
 
             case 'sixteenth':
-                for (let i = 1; i <= 3; i++) {
-                    this.subdivisionTimeoutIds.push(
-                        window.setTimeout(callback, (this.beatInterval * i) / 4)
-                    );
-                }
+                this.scheduleSubdivisionAtIntervals(callback, 4, [1, 2, 3]);
+                break;
+
+            case 'quintuplet':
+                this.scheduleSubdivisionAtIntervals(callback, 5, [1, 2, 3, 4]);
                 break;
 
             case 'sixteenth-triplet':
-                for (let i = 1; i <= 5; i++) {
-                    this.subdivisionTimeoutIds.push(
-                        window.setTimeout(callback, (this.beatInterval * i) / 6)
-                    );
-                }
+                this.scheduleSubdivisionAtIntervals(callback, 6, [1, 2, 3, 4, 5]);
                 break;
         }
+    }
+
+    /**
+     * Schedule subdivision timeouts at specified intervals
+     */
+    private scheduleSubdivisionAtIntervals(callback: () => void, divisor: number, intervals: number[]): void {
+        intervals.forEach(i => {
+            this.subdivisionTimeoutIds.push(
+                window.setTimeout(callback, (this.beatInterval * i) / divisor)
+            );
+        });
     }
 
     /**

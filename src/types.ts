@@ -4,5 +4,6 @@ export type SubdivisionMode = 'no'
     | 'triplet'
     | 'sixteenth'
     | 'sixteenth-triplet'
+    | 'quintuplet'
     ;
 

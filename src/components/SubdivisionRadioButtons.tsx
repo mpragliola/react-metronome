@@ -13,7 +13,8 @@ const subdivisionOptions: Array<{ value: SubdivisionMode; label: string; icon: s
     { value: 'straight', label: '8th', icon: null, symbol: '♫' }, // Beamed eighth notes
     { value: 'triplet', label: '8th 3', icon: null, symbol: '♫' }, // Beamed eighth notes (triplet)
     { value: 'sixteenth', label: '16th', icon: null, symbol: '♬' }, // Beamed sixteenth notes
-    { value: 'sixteenth-triplet', label: '16th 3', icon: null, symbol: '♬' }, // Beamed sixteenth notes (triplet)
+    { value: 'quintuplet', label: '16th 5:4', icon: null, symbol: '♬' }, // Beamed sixteenth notes (quintuplet)
+    { value: 'sixteenth-triplet', label: '16th 6:4', icon: null, symbol: '♬' }, // Beamed sixteenth notes (triplet)
 ];
 
 export function SubdivisionRadioButtons({ value, onChange }: SubdivisionRadioButtonsProps) {
