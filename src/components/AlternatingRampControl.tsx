@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { NumberInputField } from './NumberInputField.js';
 import { RampButton } from './RampButton.js';
+import { SequenceItem } from './SequenceItem.js';
 import { styles } from '../styles.js';
 
 interface AlternatingRampControlProps {
@@ -44,19 +45,6 @@ const validationMessageStyle: React.CSSProperties = {
     color: styles.colors.textLight,
 };
 
-const sequenceItemStyle = (isActive: boolean): React.CSSProperties => ({
-    backgroundColor: isActive ? styles.colors.accent : "transparent",
-    color: isActive ? 'white' : 'inherit',
-    padding: "2px",
-    borderRadius: "2px",
-    fontWeight: isActive ? 'bold' : 'normal',
-    transition: 'all 0.2s',
-});
-
-const subscriptStyle: React.CSSProperties = {
-    fontSize: '0.6em',
-};
-
 const sequenceContainerStyle: React.CSSProperties = {
     marginBottom: styles.spacing.margin.xs,
 };
@@ -97,15 +85,14 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
             if (i > 0) {
                 steps.push(' ');
             }
-            const active = isActive(i);
             steps.push(
-                <span
+                <SequenceItem
                     key={`pos-${i}`}
-                    style={sequenceItemStyle(active)}
-                >
-                    +{positiveStep}
-                    <sub style={subscriptStyle}>({cumulativeChange})</sub>
-                </span>
+                    step={positiveStep}
+                    cumulativeChange={cumulativeChange}
+                    isActive={isActive(i)}
+                    isPositive={true}
+                />
             );
         }
 
@@ -113,15 +100,14 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
         cumulativeChange -= negativeStep;
         steps.push(' ');
         const negativeStepIndex = multiplier;
-        const active = isActive(negativeStepIndex);
         steps.push(
-            <span
+            <SequenceItem
                 key="neg"
-                style={sequenceItemStyle(active)}
-            >
-                -{negativeStep}
-                <sub style={subscriptStyle}>({cumulativeChange})</sub>
-            </span>
+                step={negativeStep}
+                cumulativeChange={cumulativeChange}
+                isActive={isActive(negativeStepIndex)}
+                isPositive={false}
+            />
         );
 
         return steps;
