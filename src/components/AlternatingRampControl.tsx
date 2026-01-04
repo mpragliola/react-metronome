@@ -10,55 +10,62 @@ interface AlternatingRampControlProps {
     onStart: (positiveStep: number, negativeStep: number, multiplier: number, measuresPerStep: number) => void;
 }
 
+// Static styles - moved outside component to avoid recreation on every render
+const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    gap: styles.spacing.gap.sm,
+    margin: `${styles.spacing.margin.sm} 0`,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+};
+
+const operatorSignStyle: React.CSSProperties = {
+    fontSize: '0.9em',
+    marginBottom: styles.spacing.margin.xs,
+    color: styles.colors.text,
+    display: 'flex',
+    alignItems: 'center',
+};
+
+// Base message style - shared by error and validation messages
+const baseMessageStyle: React.CSSProperties = {
+    fontSize: '0.65em',
+    margin: `${styles.spacing.margin.xs} 0`,
+    textAlign: 'center',
+};
+
+const errorMessageStyle: React.CSSProperties = {
+    ...baseMessageStyle,
+    color: '#ff6b6b',
+};
+
+const validationMessageStyle: React.CSSProperties = {
+    ...baseMessageStyle,
+    color: styles.colors.textLight,
+};
+
+const sequenceItemStyle = (isActive: boolean): React.CSSProperties => ({
+    backgroundColor: isActive ? styles.colors.accent : "transparent",
+    color: isActive ? 'white' : 'inherit',
+    padding: "2px",
+    borderRadius: "2px",
+    fontWeight: isActive ? 'bold' : 'normal',
+    transition: 'all 0.2s',
+});
+
+const subscriptStyle: React.CSSProperties = {
+    fontSize: '0.6em',
+};
+
+const sequenceContainerStyle: React.CSSProperties = {
+    marginBottom: styles.spacing.margin.xs,
+};
+
 export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, onStart }: AlternatingRampControlProps) {
     const [positiveStep, setPositiveStep] = useState(4);
     const [negativeStep, setNegativeStep] = useState(2);
     const [multiplier, setMultiplier] = useState(1);
     const [measuresPerStep, setMeasuresPerStep] = useState(4);
-
-    // Abstracted styles
-    const containerStyle: React.CSSProperties = {
-        display: 'flex',
-        gap: styles.spacing.gap.sm,
-        margin: `${styles.spacing.margin.sm} 0`,
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-    };
-
-    const operatorSignStyle: React.CSSProperties = {
-        fontSize: '0.9em',
-        marginBottom: styles.spacing.margin.xs,
-        color: styles.colors.text,
-        display: 'flex',
-        alignItems: 'center',
-    };
-
-    const errorMessageStyle: React.CSSProperties = {
-        fontSize: '0.65em',
-        color: '#ff6b6b',
-        margin: `${styles.spacing.margin.xs} 0`,
-        textAlign: 'center',
-    };
-
-    const validationMessageStyle: React.CSSProperties = {
-        fontSize: '0.65em',
-        color: styles.colors.textLight,
-        margin: `${styles.spacing.margin.xs} 0`,
-        textAlign: 'center',
-    };
-
-    const sequenceItemStyle = (isActive: boolean): React.CSSProperties => ({
-        backgroundColor: isActive ? styles.colors.accent : "transparent",
-        color: isActive ? 'white' : 'inherit',
-        padding: "2px",
-        borderRadius: "2px",
-        fontWeight: isActive ? 'bold' : 'normal',
-        transition: 'all 0.2s',
-    });
-
-    const subscriptStyle: React.CSSProperties = {
-        fontSize: '0.6em',
-    };
 
     const handleStart = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
@@ -123,41 +130,20 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
     return (
         <>
             <div style={containerStyle}>
-                <NumberInputField
-                    label="Mult"
-                    value={multiplier}
-                    min={1}
-                    max={16}
-                    step={1}
-                    disabled={isRamping}
-                    onChange={(value) => setMultiplier(Math.round(value))}
-                    borderColor={hasValidationError ? '#ff6b6b' : undefined}
+                <NumberInputField label="Mult" value={multiplier} min={1} max={16} step={1} disabled={isRamping}
+                    onChange={(value) => setMultiplier(Math.round(value))} borderColor={hasValidationError ? '#ff6b6b' : undefined}
                 />
                 <div style={operatorSignStyle}>
                     ×
                 </div>
-                <NumberInputField
-                    label="+Step"
-                    value={positiveStep}
-                    min={1}
-                    max={20}
-                    step={1}
-                    disabled={isRamping}
-                    onChange={(value) => setPositiveStep(Math.round(value))}
-                    borderColor={hasValidationError ? '#ff6b6b' : undefined}
+                <NumberInputField label="Step" value={positiveStep} min={1} max={20} step={1} disabled={isRamping}
+                    onChange={(value) => setPositiveStep(Math.round(value))} borderColor={hasValidationError ? '#ff6b6b' : undefined}
                 />
                 <div style={operatorSignStyle}>
                     −
                 </div>
-                <NumberInputField
-                    label="-Step"
-                    value={negativeStep}
-                    min={1}
-                    max={319}
-                    step={1}
-                    disabled={isRamping}
-                    onChange={(value) => setNegativeStep(Math.round(value))}
-                    borderColor={hasValidationError ? '#ff6b6b' : undefined}
+                <NumberInputField label="-Step" value={negativeStep} min={1} max={319} step={1} disabled={isRamping}
+                    onChange={(value) => setNegativeStep(Math.round(value))} borderColor={hasValidationError ? '#ff6b6b' : undefined}
                 />
                 <NumberInputField
                     label="Meas"
@@ -180,7 +166,7 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
 
             {isValid && (
                 <div style={validationMessageStyle}>
-                    <div style={{ marginBottom: styles.spacing.margin.xs }}>
+                    <div style={sequenceContainerStyle}>
                         <strong>Sequence:</strong> {generateSequence()}
                     </div>
                     <div>
