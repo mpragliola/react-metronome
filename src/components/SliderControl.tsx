@@ -47,7 +47,7 @@ export function SliderControl({ label, icon, value, min, max, scale, onChange }:
   `;
 
     return (
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1 }} onWheel={handleWheel} tabIndex={-1}>
             <div style={{ ...styles.components.label, marginBottom: styles.spacing.margin.sm }}>
                 {icon && <i className={icon} style={{ marginRight: styles.spacing.margin.md }}></i>}
                 {label}
@@ -57,7 +57,6 @@ export function SliderControl({ label, icon, value, min, max, scale, onChange }:
                     ...styles.components.valueDisplay,
                     margin: `${styles.spacing.margin.sm} 0`,
                 }}
-                onWheel={handleWheel}
             >
                 {displayValue}
             </div>
@@ -71,7 +70,6 @@ export function SliderControl({ label, icon, value, min, max, scale, onChange }:
                 max={max * scale}
                 value={value * scale}
                 onChange={handleChange}
-                onWheel={handleWheel}
                 style={sliderStyle}
             />
         </div>

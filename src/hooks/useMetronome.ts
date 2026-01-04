@@ -47,6 +47,7 @@ function useMetronomeProperty<T>(
 
 export function useMetronome(): UseMetronomeReturn {
     const metronomeRef = useRef<Metronome | null>(null);
+    const [metronome, setMetronome] = useState<Metronome | null>(null);
     const [isRamping, setIsRamping] = useState(false);
     const [beatActive, setBeatActive] = useState(false);
     const [isRunning, setIsRunning] = useState(false);
@@ -54,8 +55,9 @@ export function useMetronome(): UseMetronomeReturn {
 
     // Initialize metronome
     useEffect(() => {
-        metronomeRef.current = new Metronome();
-        const metronome = metronomeRef.current;
+        const metronomeInstance = new Metronome();
+        metronomeRef.current = metronomeInstance;
+        setMetronome(metronomeInstance);
 
         // Handle state changes that need special logic
         const handleStateChanged = ((e: Event) => {
@@ -75,33 +77,35 @@ export function useMetronome(): UseMetronomeReturn {
             setTimeout(() => setBeatActive(false), CONSTANTS.UI.VISUAL_INDICATOR_ACTIVE_DURATION_MS);
         };
 
-        metronome.addEventListener(CONSTANTS.EVENTS.STATE_CHANGED, handleStateChanged);
-        metronome.addEventListener(CONSTANTS.EVENTS.RAMP_START, handleRampStart);
-        metronome.addEventListener(CONSTANTS.EVENTS.RAMP_COMPLETE, handleRampEnd);
-        metronome.addEventListener(CONSTANTS.EVENTS.RAMP_CANCELLED, handleRampEnd);
-        metronome.addEventListener(CONSTANTS.EVENTS.RAMP_STEP_CHANGED, handleRampStepChanged);
-        metronome.addEventListener(CONSTANTS.EVENTS.BEAT, handleBeat);
+        metronomeInstance.addEventListener(CONSTANTS.EVENTS.STATE_CHANGED, handleStateChanged);
+        metronomeInstance.addEventListener(CONSTANTS.EVENTS.RAMP_START, handleRampStart);
+        metronomeInstance.addEventListener(CONSTANTS.EVENTS.RAMP_COMPLETE, handleRampEnd);
+        metronomeInstance.addEventListener(CONSTANTS.EVENTS.RAMP_CANCELLED, handleRampEnd);
+        metronomeInstance.addEventListener(CONSTANTS.EVENTS.RAMP_STEP_CHANGED, handleRampStepChanged);
+        metronomeInstance.addEventListener(CONSTANTS.EVENTS.BEAT, handleBeat);
 
         // Initialize isRunning state
         setIsRunning(false);
 
         return () => {
-            metronome.removeEventListener(CONSTANTS.EVENTS.STATE_CHANGED, handleStateChanged);
-            metronome.removeEventListener(CONSTANTS.EVENTS.RAMP_START, handleRampStart);
-            metronome.removeEventListener(CONSTANTS.EVENTS.RAMP_COMPLETE, handleRampEnd);
-            metronome.removeEventListener(CONSTANTS.EVENTS.RAMP_CANCELLED, handleRampEnd);
-            metronome.removeEventListener(CONSTANTS.EVENTS.RAMP_STEP_CHANGED, handleRampStepChanged);
-            metronome.removeEventListener(CONSTANTS.EVENTS.BEAT, handleBeat);
-            metronome.dispose();
+            metronomeInstance.removeEventListener(CONSTANTS.EVENTS.STATE_CHANGED, handleStateChanged);
+            metronomeInstance.removeEventListener(CONSTANTS.EVENTS.RAMP_START, handleRampStart);
+            metronomeInstance.removeEventListener(CONSTANTS.EVENTS.RAMP_COMPLETE, handleRampEnd);
+            metronomeInstance.removeEventListener(CONSTANTS.EVENTS.RAMP_CANCELLED, handleRampEnd);
+            metronomeInstance.removeEventListener(CONSTANTS.EVENTS.RAMP_STEP_CHANGED, handleRampStepChanged);
+            metronomeInstance.removeEventListener(CONSTANTS.EVENTS.BEAT, handleBeat);
+            metronomeInstance.dispose();
+            metronomeRef.current = null;
+            setMetronome(null);
         };
     }, []);
 
     // Subscribe to metronome state using useSyncExternalStore
-    const bpm = useMetronomeProperty(metronomeRef.current, CONSTANTS.EVENTS.BPM_CHANGED, (m) => m.getBpm(), CONSTANTS.BPM.DEFAULT);
-    const volume = useMetronomeProperty(metronomeRef.current, CONSTANTS.EVENTS.VOLUME_CHANGED, (m) => m.getVolume(), CONSTANTS.VOLUME.DEFAULT);
-    const accentPattern = useMetronomeProperty(metronomeRef.current, CONSTANTS.EVENTS.ACCENT_PATTERN_CHANGED, (m) => m.getAccentPattern(), CONSTANTS.ACCENT.DEFAULT);
-    const subdivisionMode = useMetronomeProperty(metronomeRef.current, CONSTANTS.EVENTS.SUBDIVISION_MODE_CHANGED, (m) => m.getSubdivisionMode(), 'no');
-    const feel = useMetronomeProperty(metronomeRef.current, CONSTANTS.EVENTS.FEEL_CHANGED, (m) => m.getFeel(), 'normal');
+    const bpm = useMetronomeProperty(metronome, CONSTANTS.EVENTS.BPM_CHANGED, (m) => m.getBpm(), CONSTANTS.BPM.DEFAULT);
+    const volume = useMetronomeProperty(metronome, CONSTANTS.EVENTS.VOLUME_CHANGED, (m) => m.getVolume(), CONSTANTS.VOLUME.DEFAULT);
+    const accentPattern = useMetronomeProperty(metronome, CONSTANTS.EVENTS.ACCENT_PATTERN_CHANGED, (m) => m.getAccentPattern(), CONSTANTS.ACCENT.DEFAULT);
+    const subdivisionMode = useMetronomeProperty(metronome, CONSTANTS.EVENTS.SUBDIVISION_MODE_CHANGED, (m) => m.getSubdivisionMode(), 'no');
+    const feel = useMetronomeProperty(metronome, CONSTANTS.EVENTS.FEEL_CHANGED, (m) => m.getFeel(), 'normal');
 
     // Setter functions - simplified by directly calling metronome methods
     const setBpm = useCallback((newBpm: number) => {

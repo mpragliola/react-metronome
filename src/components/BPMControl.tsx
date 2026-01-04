@@ -77,7 +77,7 @@ export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
   `;
 
     return (
-        <div style={{ margin: `${styles.spacing.margin.lg} 0` }} onWheel={handleWheel}>
+        <div style={{ margin: `${styles.spacing.margin.lg} 0` }} onWheel={handleWheel} tabIndex={-1}>
             <div style={{ ...styles.components.label, marginBottom: styles.spacing.margin.sm, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 Beats Per Minute (BPM)
                 <HelpIcon
