@@ -127,7 +127,7 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
                     label="Mult"
                     value={multiplier}
                     min={1}
-                    max={10}
+                    max={16}
                     step={1}
                     disabled={isRamping}
                     onChange={(value) => setMultiplier(Math.round(value))}
@@ -153,7 +153,7 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
                     label="-Step"
                     value={negativeStep}
                     min={1}
-                    max={20}
+                    max={319}
                     step={1}
                     disabled={isRamping}
                     onChange={(value) => setNegativeStep(Math.round(value))}
