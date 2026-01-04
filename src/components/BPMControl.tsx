@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import { clamp } from '../utils/validation.js';
 import { CONSTANTS } from '../constants.js';
 import { styles } from '../styles.js';
@@ -45,6 +45,8 @@ function BPMButtonGroup({ children }: { children: React.ReactNode }) {
 }
 
 export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
+    const containerRef = useRef<HTMLDivElement>(null);
+
     const adjustBpm = useCallback((delta: number) => {
         const newBpm = clamp(bpm + delta, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX);
         onBpmChange(newBpm);
@@ -54,10 +56,20 @@ export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
         onBpmChange(Number(e.target.value));
     }, [onBpmChange]);
 
-    const handleWheel = useCallback((e: React.WheelEvent) => {
-        e.preventDefault();
-        const delta = e.deltaY > 0 ? -1 : 1;
-        adjustBpm(delta);
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const handleWheel = (e: WheelEvent) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -1 : 1;
+            adjustBpm(delta);
+        };
+
+        container.addEventListener('wheel', handleWheel, { passive: false });
+        return () => {
+            container.removeEventListener('wheel', handleWheel);
+        };
     }, [adjustBpm]);
 
     const sliderStyle: React.CSSProperties = {
@@ -77,7 +89,7 @@ export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
   `;
 
     return (
-        <div style={{ margin: `${styles.spacing.margin.lg} 0` }} onWheel={handleWheel} tabIndex={-1}>
+        <div ref={containerRef} style={{ margin: `${styles.spacing.margin.lg} 0` }}>
             <div style={{ ...styles.components.label, marginBottom: styles.spacing.margin.sm, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 Beats Per Minute (BPM)
                 <HelpIcon

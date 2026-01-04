@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import { clamp } from '../utils/validation.js';
 import { styles } from '../styles.js';
 
@@ -13,6 +13,8 @@ interface SliderControlProps {
 }
 
 export function SliderControl({ label, icon, value, min, max, scale, onChange }: SliderControlProps) {
+    const containerRef = useRef<HTMLDivElement>(null);
+
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const rawValue = Number(e.target.value);
         const actualValue = rawValue / scale;
@@ -20,12 +22,22 @@ export function SliderControl({ label, icon, value, min, max, scale, onChange }:
         onChange(clampedValue);
     }, [min, max, scale, onChange]);
 
-    const handleWheel = useCallback((e: React.WheelEvent) => {
-        e.preventDefault();
-        const delta = e.deltaY > 0 ? -1 : 1;
-        const step = scale === 100 ? 0.01 : 1; // Smaller steps for percentage values
-        const newValue = clamp(value + delta * step, min, max);
-        onChange(newValue);
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const handleWheel = (e: WheelEvent) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -1 : 1;
+            const step = scale === 100 ? 0.01 : 1; // Smaller steps for percentage values
+            const newValue = clamp(value + delta * step, min, max);
+            onChange(newValue);
+        };
+
+        container.addEventListener('wheel', handleWheel, { passive: false });
+        return () => {
+            container.removeEventListener('wheel', handleWheel);
+        };
     }, [value, min, max, scale, onChange]);
 
     const displayValue = scale === 100 ? `${Math.round(value * 100)}%` : value.toString();
@@ -47,7 +59,7 @@ export function SliderControl({ label, icon, value, min, max, scale, onChange }:
   `;
 
     return (
-        <div style={{ flex: 1 }} onWheel={handleWheel} tabIndex={-1}>
+        <div ref={containerRef} style={{ flex: 1 }}>
             <div style={{ ...styles.components.label, marginBottom: styles.spacing.margin.sm }}>
                 {icon && <i className={icon} style={{ marginRight: styles.spacing.margin.md }}></i>}
                 {label}
