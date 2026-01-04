@@ -6,7 +6,6 @@ import { styles } from '../styles.js';
 
 interface AlternatingRampControlProps {
     isRamping: boolean;
-    startBpm: number;
     currentStepIndex: number | null;
     onStart: (positiveStep: number, negativeStep: number, multiplier: number, measuresPerStep: number) => void;
 }
@@ -49,7 +48,7 @@ const sequenceContainerStyle: React.CSSProperties = {
     marginBottom: styles.spacing.margin.xs,
 };
 
-export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, onStart }: AlternatingRampControlProps) {
+export function AlternatingRampControl({ isRamping, currentStepIndex, onStart }: AlternatingRampControlProps) {
     const [positiveStep, setPositiveStep] = useState(4);
     const [negativeStep, setNegativeStep] = useState(2);
     const [multiplier, setMultiplier] = useState(1);

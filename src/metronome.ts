@@ -257,14 +257,6 @@ export class Metronome extends EventTarget {
     }
 
     /**
-     * Get the current alternating ramp step index (0 to multiplier)
-     * Returns null if not ramping or not an alternating ramp
-     */
-    getCurrentRampStepIndex(): number | null {
-        return this.currentRampStepIndex;
-    }
-
-    /**
      * Check if a BPM ramp is currently active
      */
     isRamping(): boolean {

@@ -190,7 +190,6 @@ export function RampPanel({ metronome }: RampPanelProps) {
                 </SectionLabel>
                 <AlternatingRampControl
                     isRamping={isRamping}
-                    startBpm={sharedStartBpm}
                     currentStepIndex={currentRampStepIndex}
                     onStart={handleAlternatingRampStart}
                 />
