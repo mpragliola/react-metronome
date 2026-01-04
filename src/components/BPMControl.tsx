@@ -97,7 +97,6 @@ export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
                     content={
                         <div>
                             <p>BPM controls the tempo of the metronome. Higher values mean faster tempo.</p>
-                            <p><strong>Current value:</strong> {Math.round(bpm)} BPM</p>
                             <p><strong>Range:</strong> {CONSTANTS.BPM.MIN} - {CONSTANTS.BPM.MAX} BPM</p>
                             <p><strong>Controls:</strong></p>
                             <ul style={{ marginLeft: '20px', marginTop: '8px' }}>

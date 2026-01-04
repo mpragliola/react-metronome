@@ -25,7 +25,7 @@ export function RampButton({ isRamping, isValid = true, onClick }: RampButtonPro
                     minWidth: '50px',
                 }}
             >
-                <i className={`fas ${isRamping ? 'fa-stop' : 'fa-play'}`} style={{ marginRight: styles.spacing.margin.sm }}></i>
+                <i className={`fas ${isRamping ? 'fa-stop' : 'fa-play'}`} style={{ marginRight: styles.spacing.margin.lg }}></i>
                 {isRamping ? 'Stop' : 'Start'}
             </button>
         </div>
