@@ -5,16 +5,20 @@ import { CONSTANTS } from '../constants.js';
 import { RampControl } from './RampControl.js';
 import { AlternatingRampControl } from './AlternatingRampControl.js';
 import { NumberInputField } from './NumberInputField.js';
+import { HelpIcon } from './HelpIcon.js';
 import { styles } from '../styles.js';
 
 interface RampPanelProps {
     metronome: UseMetronomeReturn;
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function SectionLabel({ children, helpContent, helpTitle }: { children: React.ReactNode; helpContent?: React.ReactNode; helpTitle?: string }) {
     return (
-        <div style={{ ...styles.components.label, marginBottom: styles.spacing.margin.sm, fontSize: '0.75em', fontWeight: 600 }}>
+        <div style={{ ...styles.components.label, marginBottom: styles.spacing.margin.sm, fontSize: '0.75em', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: styles.spacing.gap.xs }}>
             {children}
+            {helpContent && (
+                <HelpIcon content={helpContent} title={helpTitle} />
+            )}
         </div>
     );
 }
@@ -141,7 +145,22 @@ export function RampPanel({ metronome }: RampPanelProps) {
 
 
             <div style={{ marginTop: styles.spacing.margin.section, marginBottom: styles.spacing.margin.sectionLarge, paddingTop: styles.spacing.margin.section, borderTop: `1px solid ${styles.colors.sliderBg}` }}>
-                <SectionLabel>Linear Ramp</SectionLabel>
+                <SectionLabel
+                    helpTitle="Linear Ramp"
+                    helpContent={
+                        <div>
+                            <p>A linear ramp gradually changes BPM from the start value ({sharedStartBpm} BPM) to the target value ({sharedTargetBpm} BPM) over a specified duration.</p>
+                            <p><strong>Parameters:</strong></p>
+                            <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
+                                <li><strong>Inc (Increment):</strong> How much BPM changes per step ({CONSTANTS.RAMP.LINEAR.INCREMENT_MIN} - {CONSTANTS.RAMP.LINEAR.INCREMENT_MAX} BPM)</li>
+                                <li><strong>Dur (Duration):</strong> Total time for the entire ramp in seconds ({CONSTANTS.RAMP.LINEAR.DURATION_MIN} - {CONSTANTS.RAMP.LINEAR.DURATION_MAX} s)</li>
+                            </ul>
+                            <p style={{ marginTop: '12px' }}>The ramp calculates step intervals automatically based on the increment and duration to smoothly transition from start to target BPM.</p>
+                        </div>
+                    }
+                >
+                    Linear Ramp
+                </SectionLabel>
                 <RampControl
                     isRamping={isRamping}
                     onStart={handleRampStart}
@@ -149,7 +168,26 @@ export function RampPanel({ metronome }: RampPanelProps) {
             </div>
 
             <div style={{ marginTop: styles.spacing.margin.sectionLarge, paddingTop: styles.spacing.margin.sectionLarge, borderTop: `1px solid ${styles.colors.sliderBg}` }}>
-                <SectionLabel>Alternating Ramp</SectionLabel>
+                <SectionLabel
+                    helpTitle="Alternating Ramp"
+                    helpContent={
+                        <div>
+                            <p>An alternating ramp creates a repeating pattern of positive and negative BPM steps, gradually increasing overall tempo from {sharedStartBpm} BPM toward {sharedTargetBpm} BPM.</p>
+                            <p><strong>How it works:</strong></p>
+                            <p>The pattern repeats: multiple positive steps followed by one negative step. Each cycle results in a net BPM increase.</p>
+                            <p style={{ marginTop: '12px' }}><strong>Parameters:</strong></p>
+                            <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
+                                <li><strong>Mult:</strong> Number of positive steps ({CONSTANTS.RAMP.ALTERNATING.MULTIPLIER_MIN} - {CONSTANTS.RAMP.ALTERNATING.MULTIPLIER_MAX})</li>
+                                <li><strong>+Step:</strong> Positive step value in BPM ({CONSTANTS.RAMP.ALTERNATING.STEP_MIN} - {CONSTANTS.RAMP.ALTERNATING.STEP_MAX} BPM)</li>
+                                <li><strong>-Step:</strong> Negative step value in BPM ({CONSTANTS.RAMP.ALTERNATING.STEP_MIN} - {CONSTANTS.RAMP.ALTERNATING.STEP_MAX} BPM)</li>
+                                <li><strong>Meas:</strong> Measures per step ({CONSTANTS.RAMP.ALTERNATING.MEASURES_MIN} - {CONSTANTS.RAMP.ALTERNATING.MEASURES_MAX} measures)</li>
+                            </ul>
+                            <p style={{ marginTop: '12px' }}>The active step is highlighted in real-time as the ramp progresses.</p>
+                        </div>
+                    }
+                >
+                    Alternating Ramp
+                </SectionLabel>
                 <AlternatingRampControl
                     isRamping={isRamping}
                     startBpm={sharedStartBpm}

@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { clamp } from '../utils/validation.js';
 import { CONSTANTS } from '../constants.js';
 import { styles } from '../styles.js';
+import { HelpIcon } from './HelpIcon.js';
 
 interface BPMControlProps {
     bpm: number;
@@ -77,8 +78,24 @@ export function BPMControl({ bpm, onBpmChange }: BPMControlProps) {
 
     return (
         <div style={{ margin: `${styles.spacing.margin.lg} 0` }}>
-            <div style={{ ...styles.components.label, marginBottom: styles.spacing.margin.sm }}>
+            <div style={{ ...styles.components.label, marginBottom: styles.spacing.margin.sm, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 Beats Per Minute (BPM)
+                <HelpIcon
+                    title="BPM (Beats Per Minute)"
+                    content={
+                        <div>
+                            <p>BPM controls the tempo of the metronome. Higher values mean faster tempo.</p>
+                            <p><strong>Current value:</strong> {Math.round(bpm)} BPM</p>
+                            <p><strong>Range:</strong> {CONSTANTS.BPM.MIN} - {CONSTANTS.BPM.MAX} BPM</p>
+                            <p><strong>Controls:</strong></p>
+                            <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
+                                <li>Use the slider to adjust</li>
+                                <li>Click +/- buttons for quick adjustments</li>
+                                <li>Scroll mouse wheel over the BPM display</li>
+                            </ul>
+                        </div>
+                    }
+                />
             </div>
             <div
                 style={{

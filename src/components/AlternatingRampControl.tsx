@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { NumberInputField } from './NumberInputField.js';
 import { RampButton } from './RampButton.js';
+import { CONSTANTS } from '../constants.js';
 import { styles } from '../styles.js';
 
 interface AlternatingRampControlProps {
@@ -96,8 +97,8 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
                 <NumberInputField
                     label="Mult"
                     value={multiplier}
-                    min={1}
-                    max={10}
+                    min={CONSTANTS.RAMP.ALTERNATING.MULTIPLIER_MIN}
+                    max={CONSTANTS.RAMP.ALTERNATING.MULTIPLIER_MAX}
                     step={1}
                     disabled={isRamping}
                     onChange={(value) => setMultiplier(Math.round(value))}
@@ -115,8 +116,8 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
                 <NumberInputField
                     label="+Step"
                     value={positiveStep}
-                    min={1}
-                    max={20}
+                    min={CONSTANTS.RAMP.ALTERNATING.STEP_MIN}
+                    max={CONSTANTS.RAMP.ALTERNATING.STEP_MAX}
                     step={1}
                     disabled={isRamping}
                     onChange={(value) => setPositiveStep(Math.round(value))}
@@ -125,8 +126,8 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
                 <NumberInputField
                     label="-Step"
                     value={negativeStep}
-                    min={1}
-                    max={20}
+                    min={CONSTANTS.RAMP.ALTERNATING.STEP_MIN}
+                    max={CONSTANTS.RAMP.ALTERNATING.STEP_MAX}
                     step={1}
                     disabled={isRamping}
                     onChange={(value) => setNegativeStep(Math.round(value))}
@@ -135,8 +136,8 @@ export function AlternatingRampControl({ isRamping, startBpm, currentStepIndex, 
                 <NumberInputField
                     label="Meas"
                     value={measuresPerStep}
-                    min={1}
-                    max={32}
+                    min={CONSTANTS.RAMP.ALTERNATING.MEASURES_MIN}
+                    max={CONSTANTS.RAMP.ALTERNATING.MEASURES_MAX}
                     step={1}
                     disabled={isRamping}
                     onChange={(value) => setMeasuresPerStep(Math.round(value))}

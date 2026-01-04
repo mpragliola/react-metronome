@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { NumberInputField } from './NumberInputField.js';
 import { RampButton } from './RampButton.js';
+import { CONSTANTS } from '../constants.js';
 import { styles } from '../styles.js';
 
 interface RampControlProps {
@@ -24,8 +25,8 @@ export function RampControl({ isRamping, onStart }: RampControlProps) {
                 <NumberInputField
                     label="Inc"
                     value={increment}
-                    min={0.1}
-                    max={10}
+                    min={CONSTANTS.RAMP.LINEAR.INCREMENT_MIN}
+                    max={CONSTANTS.RAMP.LINEAR.INCREMENT_MAX}
                     step={0.1}
                     disabled={isRamping}
                     onChange={setIncrement}
@@ -33,8 +34,8 @@ export function RampControl({ isRamping, onStart }: RampControlProps) {
                 <NumberInputField
                     label="Dur (s)"
                     value={durationSeconds}
-                    min={1}
-                    max={300}
+                    min={CONSTANTS.RAMP.LINEAR.DURATION_MIN}
+                    max={CONSTANTS.RAMP.LINEAR.DURATION_MAX}
                     step={1}
                     disabled={isRamping}
                     onChange={setDurationSeconds}

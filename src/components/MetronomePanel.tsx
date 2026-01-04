@@ -9,6 +9,7 @@ import { FeelRadioButtons } from './FeelRadioButtons.js';
 import { SubdivisionRadioButtons } from './SubdivisionRadioButtons.js';
 import { VisualIndicator, VisualIndicatorRef } from './VisualIndicator.js';
 import { ToggleButton } from './ToggleButton.js';
+import { HelpIcon } from './HelpIcon.js';
 import { styles } from '../styles.js';
 import { FeelMode, SubdivisionMode } from '../types.js';
 
@@ -103,15 +104,34 @@ export function MetronomePanel({ metronome }: MetronomePanelProps) {
                     scale={100}
                     onChange={setVolume}
                 />
-                <SliderControl
-                    label="Accent"
-                    icon="fas fa-bullseye"
-                    value={accentPattern}
-                    min={CONSTANTS.ACCENT.MIN}
-                    max={CONSTANTS.ACCENT.MAX}
-                    scale={1}
-                    onChange={setAccentPattern}
-                />
+                <div style={{ flex: 1, position: 'relative' }}>
+                    <SliderControl
+                        label="Accent"
+                        icon="fas fa-bullseye"
+                        value={accentPattern}
+                        min={CONSTANTS.ACCENT.MIN}
+                        max={CONSTANTS.ACCENT.MAX}
+                        scale={1}
+                        onChange={setAccentPattern}
+                    />
+                    <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                        <HelpIcon
+                            title="Accent Pattern"
+                            content={
+                                <div>
+                                    <p>The accent pattern determines how many beats make up one measure (or accent cycle).</p>
+                                    <p><strong>Range:</strong> {CONSTANTS.ACCENT.MIN} - {CONSTANTS.ACCENT.MAX} beats</p>
+                                    <p style={{ marginTop: '12px' }}><strong>How it works:</strong></p>
+                                    <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
+                                        <li>The first beat of each cycle plays an accented sound (higher pitch)</li>
+                                        <li>Subsequent beats play regular sounds</li>
+                                        <li>For example, with accent = 4: every 4 beats, the first is accented</li>
+                                    </ul>
+                                </div>
+                            }
+                        />
+                    </div>
+                </div>
             </div>
 
             <FeelRadioButtons value={feel} onChange={setFeel} />

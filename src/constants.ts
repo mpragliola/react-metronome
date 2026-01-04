@@ -35,6 +35,22 @@ export const CONSTANTS = {
     UI: {
         VISUAL_INDICATOR_ACTIVE_DURATION_MS: 50,
     },
+    RAMP: {
+        LINEAR: {
+            INCREMENT_MIN: 0.1,
+            INCREMENT_MAX: 10,
+            DURATION_MIN: 1,
+            DURATION_MAX: 300,
+        },
+        ALTERNATING: {
+            MULTIPLIER_MIN: 1,
+            MULTIPLIER_MAX: 10,
+            STEP_MIN: 1,
+            STEP_MAX: 20,
+            MEASURES_MIN: 1,
+            MEASURES_MAX: 32,
+        },
+    },
     EVENTS: {
         BEAT: 'beat',
         BPM_CHANGED: 'bpmChanged',

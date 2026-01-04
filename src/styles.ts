@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react';
 
+const mainFont = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif";
+
 /**
  * Spacing theme - reusable spacing values
  */
@@ -64,13 +66,13 @@ export const styles = {
   },
   spacing,
   fonts: {
-    family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+    family: mainFont,
   },
   // Shared component styles
   components: {
     // Base styles that inherit
     base: {
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
       color: '#333',
     },
     // Button styles
@@ -82,7 +84,7 @@ export const styles = {
       cursor: 'pointer',
       transition: 'all 0.3s',
       fontWeight: 600,
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
     } as CSSProperties,
     buttonPrimary: {
       background: '#5a8a7a',
@@ -102,7 +104,7 @@ export const styles = {
       outline: 'none',
       WebkitAppearance: 'none' as const,
       appearance: 'none' as const,
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
     } as CSSProperties,
     sliderThumb: {
       WebkitAppearance: 'none',
@@ -116,12 +118,12 @@ export const styles = {
     label: {
       fontSize: '0.8em',
       color: '#555',
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
     } as CSSProperties,
     labelSmall: {
       fontSize: '0.7em',
       color: '#555',
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
     } as CSSProperties,
     // Input/Select styles
     input: {
@@ -133,7 +135,7 @@ export const styles = {
       color: '#333',
       outline: 'none',
       transition: 'border-color 0.3s',
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
       textAlign: 'center' as const,
     } as CSSProperties,
     select: {
@@ -146,20 +148,20 @@ export const styles = {
       cursor: 'pointer',
       outline: 'none',
       transition: 'border-color 0.3s',
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
     } as CSSProperties,
     // Value display
     valueDisplay: {
       fontSize: '0.9em',
       fontWeight: 'bold',
       color: '#5a8a7a',
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
     } as CSSProperties,
     valueDisplayLarge: {
       fontSize: '1.5em',
       fontWeight: 'bold',
       color: '#5a8a7a',
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
     } as CSSProperties,
     // Panel container
     panelContainer: {
@@ -195,7 +197,28 @@ export const styles = {
     // Heading
     heading: {
       color: '#5a8a7a',
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+      fontFamily: mainFont,
+    } as CSSProperties,
+    // Help modal content
+    helpModalContent: {
+      color: '#333',
+      lineHeight: '1.6',
+      fontSize: '1em', // Base size - all children will inherit consistently
+      textAlign: 'left' as const,
+      fontFamily: mainFont,
+    } as CSSProperties,
+    helpModalParagraph: {
+      margin: '0.5em 0',
+      fontSize: '0.9em',
+    } as CSSProperties,
+    helpModalList: {
+      margin: '0.5em 0',
+      paddingLeft: '1.5em',
+      fontSize: '0.9em',
+    } as CSSProperties,
+    helpModalListItem: {
+      margin: '0.25em 0',
+      fontSize: '0.9em',
     } as CSSProperties,
   },
 } as const;
