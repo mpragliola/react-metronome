@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { styles } from '../styles.js';
 
@@ -72,7 +72,45 @@ interface HelpModalProps {
     onClose: () => void;
 }
 
+// Global style for modal animations - only add once
+let modalAnimationStyleAdded = false;
+
 function HelpModal({ title, content, onClose }: HelpModalProps) {
+    // Add animation styles once
+    useEffect(() => {
+        if (!modalAnimationStyleAdded) {
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideInUpZoom {
+                    from {
+                        transform: translateY(20px) scale(0.95);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateY(0) scale(1);
+                        opacity: 1;
+                    }
+                }
+                .help-modal-overlay {
+                    animation: fadeIn 0.2s ease-out;
+                }
+                .help-modal-content {
+                    animation: slideInUpZoom 0.3s ease-out;
+                }
+            `;
+            document.head.appendChild(style);
+            modalAnimationStyleAdded = true;
+        }
+    }, []);
+
     const overlayStyle: React.CSSProperties = {
         position: 'fixed',
         top: 0,
@@ -81,9 +119,10 @@ function HelpModal({ title, content, onClose }: HelpModalProps) {
         bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'flex-start',
         paddingLeft: '20px',
+        paddingTop: '20px',
         zIndex: 1000,
     };
 
@@ -121,10 +160,12 @@ function HelpModal({ title, content, onClose }: HelpModalProps) {
 
     return (
         <div
+            className="help-modal-overlay"
             style={overlayStyle}
             onClick={onClose}
         >
             <div
+                className="help-modal-content"
                 style={modalStyle}
                 onClick={(e) => e.stopPropagation()}
             >
@@ -148,7 +189,7 @@ function HelpModal({ title, content, onClose }: HelpModalProps) {
                         ...styles.components.heading,
                         marginTop: 0,
                         marginBottom: styles.spacing.margin.lg,
-                        fontSize: '1.2em',
+                        fontSize: '1em',
                         textAlign: 'left',
                         fontWeight: 600,
                         fontFamily: styles.fonts.family,
@@ -159,7 +200,7 @@ function HelpModal({ title, content, onClose }: HelpModalProps) {
                 <div style={{
                     color: styles.colors.text,
                     lineHeight: '1.6',
-                    fontSize: '0.9em',
+                    fontSize: '0.7em',
                     textAlign: 'left',
                     fontFamily: styles.fonts.family,
                 }}>
