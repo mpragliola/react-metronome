@@ -4,14 +4,12 @@ import { clamp } from '../utils/validation.js';
 import { CONSTANTS } from '../constants.js';
 import { BPMControl } from './BPMControl.js';
 import { SliderControl } from './SliderControl.js';
-import { SelectControl } from './SelectControl.js';
 import { FeelRadioButtons } from './FeelRadioButtons.js';
 import { SubdivisionRadioButtons } from './SubdivisionRadioButtons.js';
 import { VisualIndicator, VisualIndicatorRef } from './VisualIndicator.js';
 import { ToggleButton } from './ToggleButton.js';
 import { HelpIcon } from './HelpIcon.js';
 import { styles } from '../styles.js';
-import { FeelMode, SubdivisionMode } from '../types.js';
 
 interface MetronomePanelProps {
     metronome: UseMetronomeReturn;
