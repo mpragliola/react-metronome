@@ -134,9 +134,45 @@ export function MetronomePanel({ metronome }: MetronomePanelProps) {
                 </div>
             </div>
 
-            <FeelRadioButtons value={feel} onChange={setFeel} />
+            <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                    <HelpIcon
+                        title="Feel Mode"
+                        content={
+                            <div>
+                                <p>Feel mode changes the playback speed relative to the base BPM.</p>
+                                <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
+                                    <li><strong>Normal:</strong> Plays at the base BPM.</li>
+                                    <li><strong>x2 (Double):</strong> Plays twice as fast as the set BPM.</li>
+                                    <li><strong>1/2 (Half):</strong> Plays at half the speed of the set BPM.</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                </div>
+                <FeelRadioButtons value={feel} onChange={setFeel} />
+            </div>
 
-            <SubdivisionRadioButtons value={subdivisionMode} onChange={setSubdivisionMode} />
+            <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                    <HelpIcon
+                        title="Subdivision"
+                        content={
+                            <div>
+                                <p>Subdivisions add extra beats between the main pulses.</p>
+                                <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
+                                    <li><strong>No:</strong> Only play the main beats.</li>
+                                    <li><strong>8th:</strong> Splits each beat into 2 (eighth notes).</li>
+                                    <li><strong>8th 3:</strong> Splits each beat into 3 (triplets).</li>
+                                    <li><strong>16th:</strong> Splits each beat into 4 (sixteenth notes).</li>
+                                    <li><strong>16th 3:</strong> Splits each beat into 6 (sextuplets).</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                </div>
+                <SubdivisionRadioButtons value={subdivisionMode} onChange={setSubdivisionMode} />
+            </div>
 
             <VisualIndicator ref={visualIndicatorRef} active={beatActive} onTap={handleTapTempo} />
 

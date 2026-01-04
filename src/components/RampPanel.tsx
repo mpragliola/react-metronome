@@ -152,8 +152,8 @@ export function RampPanel({ metronome }: RampPanelProps) {
                             <p>A linear ramp gradually changes BPM from the start value ({sharedStartBpm} BPM) to the target value ({sharedTargetBpm} BPM) over a specified duration.</p>
                             <p><strong>Parameters:</strong></p>
                             <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
-                                <li><strong>Inc (Increment):</strong> How much BPM changes per step ({CONSTANTS.RAMP.LINEAR.INCREMENT_MIN} - {CONSTANTS.RAMP.LINEAR.INCREMENT_MAX} BPM)</li>
-                                <li><strong>Dur (Duration):</strong> Total time for the entire ramp in seconds ({CONSTANTS.RAMP.LINEAR.DURATION_MIN} - {CONSTANTS.RAMP.LINEAR.DURATION_MAX} s)</li>
+                                <li><strong>Inc (Increment):</strong> How much BPM changes per step (0.1 - 10)</li>
+                                <li><strong>Dur (Duration):</strong> Total time for the entire ramp in seconds (1 - 300)</li>
                             </ul>
                             <p style={{ marginTop: '12px' }}>The ramp calculates step intervals automatically based on the increment and duration to smoothly transition from start to target BPM.</p>
                         </div>
@@ -177,10 +177,10 @@ export function RampPanel({ metronome }: RampPanelProps) {
                             <p>The pattern repeats: multiple positive steps followed by one negative step. Each cycle results in a net BPM increase.</p>
                             <p style={{ marginTop: '12px' }}><strong>Parameters:</strong></p>
                             <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
-                                <li><strong>Mult:</strong> Number of positive steps ({CONSTANTS.RAMP.ALTERNATING.MULTIPLIER_MIN} - {CONSTANTS.RAMP.ALTERNATING.MULTIPLIER_MAX})</li>
-                                <li><strong>+Step:</strong> Positive step value in BPM ({CONSTANTS.RAMP.ALTERNATING.STEP_MIN} - {CONSTANTS.RAMP.ALTERNATING.STEP_MAX} BPM)</li>
-                                <li><strong>-Step:</strong> Negative step value in BPM ({CONSTANTS.RAMP.ALTERNATING.STEP_MIN} - {CONSTANTS.RAMP.ALTERNATING.STEP_MAX} BPM)</li>
-                                <li><strong>Meas:</strong> Measures per step ({CONSTANTS.RAMP.ALTERNATING.MEASURES_MIN} - {CONSTANTS.RAMP.ALTERNATING.MEASURES_MAX} measures)</li>
+                                <li><strong>Mult:</strong> Number of positive steps (1 - 10)</li>
+                                <li><strong>+Step:</strong> Positive step value in BPM (1 - 20)</li>
+                                <li><strong>-Step:</strong> Negative step value in BPM (1 - 20)</li>
+                                <li><strong>Meas:</strong> Measures per step (1 - 32)</li>
                             </ul>
                             <p style={{ marginTop: '12px' }}>The active step is highlighted in real-time as the ramp progresses.</p>
                         </div>

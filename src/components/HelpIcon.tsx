@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { styles } from '../styles.js';
-
-// Global style for help modal content normalization - only add once
-let helpModalStyleAdded = false;
 
 interface HelpIconProps {
     content: React.ReactNode;
@@ -41,7 +38,7 @@ export function HelpIcon({ content, title }: HelpIconProps) {
                     marginLeft: styles.spacing.margin.xs,
                     transition: 'all 0.2s',
                     color: styles.colors.textLight,
-                    opacity: 0.6,
+                    opacity: 0.3,
                 }}
                 onMouseEnter={(e) => {
                     e.currentTarget.style.opacity = '1';
@@ -49,7 +46,7 @@ export function HelpIcon({ content, title }: HelpIconProps) {
                     e.currentTarget.style.transform = 'scale(1.15)';
                 }}
                 onMouseLeave={(e) => {
-                    e.currentTarget.style.opacity = '0.6';
+                    e.currentTarget.style.opacity = '0.3';
                     e.currentTarget.style.color = styles.colors.textLight;
                     e.currentTarget.style.transform = 'scale(1)';
                 }}
@@ -75,46 +72,7 @@ interface HelpModalProps {
     onClose: () => void;
 }
 
-
 function HelpModal({ title, content, onClose }: HelpModalProps) {
-    // Add global style once
-    useEffect(() => {
-        if (!helpModalStyleAdded) {
-            const style = document.createElement('style');
-            style.textContent = `
-                .help-modal-content-normalized,
-                .help-modal-content-normalized *,
-                .help-modal-content-normalized p,
-                .help-modal-content-normalized ul,
-                .help-modal-content-normalized li,
-                .help-modal-content-normalized div,
-                .help-modal-content-normalized strong,
-                .help-modal-content-normalized span,
-                .help-modal-content-normalized h2 {
-                    font-size: 14px !important;
-                    font-family: ${styles.fonts.family} !important;
-                    line-height: 1.6 !important;
-                }
-                .help-modal-content-normalized h2 {
-                    font-size: 18px !important;
-                    font-weight: 600 !important;
-                    margin-top: 0 !important;
-                    margin-bottom: 16px !important;
-                    color: ${styles.colors.primary} !important;
-                }
-                .help-modal-content-normalized p {
-                    margin-bottom: 12px !important;
-                }
-                .help-modal-content-normalized ul {
-                    padding-left: 20px !important;
-                    margin-bottom: 12px !important;
-                }
-            `;
-            document.head.appendChild(style);
-            helpModalStyleAdded = true;
-        }
-    }, []);
-
     const overlayStyle: React.CSSProperties = {
         position: 'fixed',
         top: 0,
@@ -125,31 +83,32 @@ function HelpModal({ title, content, onClose }: HelpModalProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingLeft: '40px',
-        zIndex: 9999,
+        paddingLeft: '20px',
+        zIndex: 1000,
     };
 
     const modalStyle: React.CSSProperties = {
         background: 'white',
         borderRadius: '8px',
-        padding: '24px',
-        width: '450px',
-        maxWidth: '90vw',
-        maxHeight: '85vh',
+        padding: styles.spacing.xl,
+        maxWidth: '500px',
+        maxHeight: '80vh',
         overflow: 'auto',
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
         position: 'relative',
+        margin: styles.spacing.xl,
+        fontFamily: styles.fonts.family,
     };
 
     const closeButtonStyle: React.CSSProperties = {
         position: 'absolute',
-        top: '12px',
-        right: '12px',
+        top: styles.spacing.md,
+        right: styles.spacing.md,
         background: 'none',
         border: 'none',
         fontSize: '24px',
         cursor: 'pointer',
-        color: '#666',
+        color: styles.colors.textLight,
         padding: '0',
         width: '30px',
         height: '30px',
@@ -158,17 +117,11 @@ function HelpModal({ title, content, onClose }: HelpModalProps) {
         justifyContent: 'center',
         borderRadius: '50%',
         transition: 'all 0.2s',
-        fontFamily: styles.fonts.family,
     };
 
     return (
         <div
-            style={{
-                ...overlayStyle,
-                justifyContent: 'flex-start',
-                paddingLeft: '40px',
-                zIndex: 9999,
-            }}
+            style={overlayStyle}
             onClick={onClose}
         >
             <div
@@ -190,28 +143,27 @@ function HelpModal({ title, content, onClose }: HelpModalProps) {
                 >
                     ×
                 </button>
-                <div className="help-modal-content-normalized">
-                    {title && (
-                        <h2 style={{
-                            marginTop: 0,
-                            marginBottom: '16px',
-                            color: styles.colors.primary,
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            textAlign: 'left',
-                            fontFamily: styles.fonts.family,
-                        }}>
-                            {title}
-                        </h2>
-                    )}
-                    <div
-                        style={{
-                            color: '#333',
-                            textAlign: 'left',
-                        }}
-                    >
-                        {content}
-                    </div>
+                {title && (
+                    <h2 style={{
+                        ...styles.components.heading,
+                        marginTop: 0,
+                        marginBottom: styles.spacing.margin.lg,
+                        fontSize: '1.2em',
+                        textAlign: 'left',
+                        fontWeight: 600,
+                        fontFamily: styles.fonts.family,
+                    }}>
+                        {title}
+                    </h2>
+                )}
+                <div style={{
+                    color: styles.colors.text,
+                    lineHeight: '1.6',
+                    fontSize: '0.9em',
+                    textAlign: 'left',
+                    fontFamily: styles.fonts.family,
+                }}>
+                    {content}
                 </div>
             </div>
         </div>

@@ -198,6 +198,7 @@ export const styles = {
     heading: {
       color: '#5a8a7a',
       fontFamily: mainFont,
+      fontWeight: 600,
     } as CSSProperties,
     // Help modal content
     helpModalContent: {
