@@ -36,3 +36,6 @@ styles.css.map
 # Vite cache
 .vite/
 .cache/
+
+# Git worktrees
+.worktrees/
