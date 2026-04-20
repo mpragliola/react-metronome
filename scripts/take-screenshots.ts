@@ -65,7 +65,26 @@ async function run() {
     cleanOutputDir();
 
     const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+
+    // First pass: measure the two panels' combined bounding box at a generous viewport.
+    // The app centers them in min-height:100vh, so we measure the panels wrapper, not body.
+    const measureContext = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    const measurePage = await measureContext.newPage();
+    await measurePage.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await measurePage.waitForSelector('h1', { timeout: 10_000 });
+    await measurePage.waitForTimeout(400);
+    // The panels wrapper is the flex div containing both MetronomePanel and RampPanel.
+    // Locate it via the two h1s that are siblings inside it.
+    const metH1 = measurePage.locator('h1').filter({ hasText: 'Metronome' });
+    const panelsBox = await metH1.locator('xpath=ancestor::div[2]').boundingBox();
+    await measureContext.close();
+
+    // Size viewport snugly around the panels so modal screenshots show no dead space.
+    const APP_PAD = 24;
+    const appWidth = Math.ceil((panelsBox?.width ?? 800) + APP_PAD * 2);
+    const appHeight = Math.ceil((panelsBox?.height ?? 700) + APP_PAD * 2);
+
+    const context = await browser.newContext({ viewport: { width: appWidth, height: appHeight } });
     const page = await context.newPage();
 
     page.on('pageerror', (err) => console.error('Page error:', err.message));
