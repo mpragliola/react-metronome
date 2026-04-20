@@ -68,7 +68,7 @@ async function run() {
 
     // First pass: measure the two panels' combined bounding box at a generous viewport.
     // The app centers them in min-height:100vh, so we measure the panels wrapper, not body.
-    const measureContext = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    const measureContext = await browser.newContext({ viewport: { width: 1400, height: 900 }, deviceScaleFactor: 2 });
     const measurePage = await measureContext.newPage();
     await measurePage.goto(BASE_URL, { waitUntil: 'networkidle' });
     await measurePage.waitForSelector('h1', { timeout: 10_000 });
@@ -84,7 +84,7 @@ async function run() {
     const appWidth = Math.ceil((panelsBox?.width ?? 800) + APP_PAD * 2);
     const appHeight = Math.ceil((panelsBox?.height ?? 700) + APP_PAD * 2);
 
-    const context = await browser.newContext({ viewport: { width: appWidth, height: appHeight } });
+    const context = await browser.newContext({ viewport: { width: appWidth, height: appHeight }, deviceScaleFactor: 2 });
     const page = await context.newPage();
 
     page.on('pageerror', (err) => console.error('Page error:', err.message));
