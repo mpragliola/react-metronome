@@ -59,14 +59,14 @@ export function MetronomePanel({ metronome }: MetronomePanelProps) {
                 e.preventDefault();
                 visualIndicatorRef.current?.triggerTap();
                 handleTapTempo();
-            } else if (e.key === '+' || e.key === '=') {
+            } else if ((e.key === '+' || e.key === '=') && !e.ctrlKey && !e.metaKey) {
                 e.preventDefault();
                 if (e.shiftKey) {
                     setBpm(clamp(bpm + 2, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX));
                 } else {
                     setBpm(clamp(bpm + 1, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX));
                 }
-            } else if (e.key === '-' || e.key === '_') {
+            } else if ((e.key === '-' || e.key === '_') && !e.ctrlKey && !e.metaKey) {
                 e.preventDefault();
                 if (e.shiftKey) {
                     setBpm(clamp(bpm - 2, CONSTANTS.BPM.MIN, CONSTANTS.BPM.MAX));
