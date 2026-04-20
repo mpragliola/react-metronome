@@ -14,6 +14,7 @@ export function RadioButton({ value, label, icon, symbol, isSelected, onClick }:
     return (
         <button
             onClick={onClick}
+            aria-pressed={isSelected}
             style={{
                 ...styles.components.button,
                 padding: styles.spacing.padding.lg,
