@@ -24,7 +24,7 @@ const subscriptStyle: React.CSSProperties = {
 export function SequenceItem({ step, cumulativeChange, isActive, isPositive }: SequenceItemProps) {
     const sign = isPositive ? '+' : '-';
     return (
-        <span style={sequenceItemStyle(isActive)}>
+        <span style={sequenceItemStyle(isActive)} data-active={isActive}>
             {sign}{step}
             <sub style={subscriptStyle}>({cumulativeChange})</sub>
         </span>
